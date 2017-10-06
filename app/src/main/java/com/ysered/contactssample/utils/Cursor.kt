@@ -11,7 +11,6 @@ fun Cursor.forEach(body: Cursor.(cursor: Cursor) -> Unit) {
             body(this)
             moveToNext()
         }
-        close()
     }
 }
 
