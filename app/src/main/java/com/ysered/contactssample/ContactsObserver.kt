@@ -33,9 +33,7 @@ class ContactsObserver(
             Contacts.SORT_KEY_PRIMARY
     )
 
-    override fun onLoaderReset(loader: Loader<Cursor>?) {
-
-    }
+    override fun onLoaderReset(loader: Loader<Cursor>?) = Unit
 
     override fun onLoadFinished(loader: Loader<Cursor>?, cursor: Cursor?) {
         cursor?.let {

@@ -5,6 +5,9 @@ import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import com.ysered.contactssample.utils.debug
 import com.ysered.contactssample.utils.processPermissionResults
 import com.ysered.contactssample.utils.requestPermissionsIfNeeded
@@ -16,6 +19,9 @@ class ContactsActivity : AppCompatActivity(), LifecycleOwner {
         private val LOADER_ID = 1
         private val RC_CONTACTS = 1
     }
+
+    private lateinit var contactsRv: RecyclerView
+    private lateinit var contactsAdapter: ContactsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,9 +38,17 @@ class ContactsActivity : AppCompatActivity(), LifecycleOwner {
     }
 
     private fun onGranted() {
+        contactsAdapter = ContactsAdapter()
+        contactsRv = findViewById<RecyclerView>(R.id.contactsRv).apply {
+            layoutManager = LinearLayoutManager(this@ContactsActivity)
+            addItemDecoration(DividerItemDecoration(this@ContactsActivity, DividerItemDecoration.VERTICAL))
+            adapter = contactsAdapter
+        }
+
         val contactsObserver = ContactsObserver(this).apply {
             contactsLiveData.observe(this@ContactsActivity, Observer { contacts ->
                 debug("Observed contacts: $contacts")
+                contacts?.let { contactsAdapter.contacts = it }
             })
         }
         lifecycle.addObserver(contactsObserver)
