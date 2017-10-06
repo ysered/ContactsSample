@@ -14,4 +14,4 @@ fun Cursor.forEach(body: Cursor.(cursor: Cursor) -> Unit) {
     }
 }
 
-fun Cursor.getString(name: String): String = getString(getColumnIndex(name))
+fun Cursor.getString(name: String): String = getString(getColumnIndex(name)) ?: ""

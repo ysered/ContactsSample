@@ -37,8 +37,9 @@ class ContactsObserver(
         cursor?.let {
             val contactList = mutableListOf<Contact>()
             it.forEach {
-                val contact = Contact(getString(Contacts.DISPLAY_NAME))
-                contactList.add(contact)
+                val photoUri = getString(Contacts.PHOTO_URI)
+                val displayName = getString(Contacts.DISPLAY_NAME)
+                contactList.add(Contact(photoUri, displayName))
             }
             contactsLiveData.postValue(contactList)
         }

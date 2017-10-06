@@ -6,9 +6,10 @@
     android:layout_height="?android:attr/listPreferredItemHeight">
 
     <ImageView
-        android:id="@+id/contactImage"
+        android:id="@+id/photoImage"
         android:layout_width="?android:attr/listPreferredItemHeight"
         android:layout_height="?android:attr/listPreferredItemHeight"
+        android:layout_marginStart="@dimen/marginSmall"
         android:adjustViewBounds="true"
         android:contentDescription="@null"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -19,14 +20,14 @@
         android:id="@+id/displayNameText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="@dimen/marginSmall"
+        android:layout_marginEnd="@dimen/marginDefault"
+        android:layout_marginStart="@dimen/marginSmall"
+        android:layout_marginTop="@dimen/marginSmall"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/contactImage"
+        app:layout_constraintStart_toEndOf="@+id/photoImage"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Display Name" />
 

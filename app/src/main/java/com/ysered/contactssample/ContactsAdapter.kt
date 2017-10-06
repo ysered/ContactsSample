@@ -1,9 +1,11 @@
 package com.ysered.contactssample
 
+import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import com.ysered.contactssample.data.Contact
 
@@ -29,9 +31,11 @@ class ContactsAdapter : RecyclerView.Adapter<ContactsAdapter.ContactsViewHolder>
     override fun getItemCount(): Int = contacts.size
 
     inner class ContactsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val photoImage = itemView.findViewById<ImageView>(R.id.photoImage)
         private val displayNameText = itemView.findViewById<TextView>(R.id.displayNameText)
 
         fun bind(contact: Contact) {
+            photoImage.setImageURI(Uri.parse(contact.photoUri))
             displayNameText.text = contact.displayName
         }
     }
