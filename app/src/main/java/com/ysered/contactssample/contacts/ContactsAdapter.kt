@@ -10,7 +10,7 @@ import com.ysered.contactssample.data.Contact
 import com.ysered.contactssample.views.ContactImageView
 
 
-class ContactsAdapter : RecyclerView.Adapter<ContactsAdapter.ContactsViewHolder>() {
+class ContactsAdapter(private val callback: Callback) : RecyclerView.Adapter<ContactsAdapter.ContactsViewHolder>() {
 
     var contacts: List<Contact> = mutableListOf()
         set(value) {
@@ -37,6 +37,9 @@ class ContactsAdapter : RecyclerView.Adapter<ContactsAdapter.ContactsViewHolder>
         init {
             // TODO: find better way
             setIsRecyclable(false)
+            itemView.setOnClickListener {
+                callback.onClick()
+            }
         }
 
         fun bind(contact: Contact) {
@@ -46,5 +49,9 @@ class ContactsAdapter : RecyclerView.Adapter<ContactsAdapter.ContactsViewHolder>
                 photoImage.setImageURI(contact.photoUri)
             displayNameText.text = contact.displayName
         }
+    }
+
+    interface Callback {
+        fun onClick()
     }
 }

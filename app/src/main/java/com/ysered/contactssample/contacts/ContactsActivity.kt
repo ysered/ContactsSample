@@ -9,6 +9,7 @@ import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import com.ysered.contactssample.R
+import com.ysered.contactssample.details.DetailsActivity
 import com.ysered.contactssample.utils.debug
 import com.ysered.contactssample.utils.processPermissionResults
 import com.ysered.contactssample.utils.requestPermissionsIfNeeded
@@ -39,7 +40,11 @@ class ContactsActivity : AppCompatActivity(), LifecycleOwner {
     }
 
     private fun onGranted() {
-        contactsAdapter = ContactsAdapter()
+        contactsAdapter = ContactsAdapter(object: ContactsAdapter.Callback {
+            override fun onClick() {
+                DetailsActivity.start(this@ContactsActivity)
+            }
+        })
         contactsRv = findViewById<RecyclerView>(R.id.contactsRv).apply {
             layoutManager = LinearLayoutManager(this@ContactsActivity)
             addItemDecoration(DividerItemDecoration(this@ContactsActivity, DividerItemDecoration.VERTICAL))
