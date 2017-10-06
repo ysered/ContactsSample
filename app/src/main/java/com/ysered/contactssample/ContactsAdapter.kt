@@ -40,7 +40,7 @@ class ContactsAdapter : RecyclerView.Adapter<ContactsAdapter.ContactsViewHolder>
 
         fun bind(contact: Contact) {
             if (contact.photoUri == null)
-                photoImage.firstLetter = contact.displayName.first().toString()
+                photoImage.text = contact.displayName
             else
                 photoImage.setImageURI(contact.photoUri)
             displayNameText.text = contact.displayName

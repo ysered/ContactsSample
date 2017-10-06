@@ -1,7 +1,10 @@
 package com.ysered.contactssample.views
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.util.AttributeSet
@@ -35,15 +38,20 @@ class ContactImageView(
         textSize = 64f // TODO: move to xml attributes
     }
 
-    var firstLetter: String = " "
+    private var isDrawText = true
+
+    var text: String = "?"
         set(value) {
-            field = value
-            invalidate()
+            if (isDrawText && value.trim().isNotEmpty()) {
+                field = value.first().toString()
+                invalidate()
+            }
         }
 
     override fun setImageURI(uri: Uri?) {
         super.setImageURI(uri)
-        if (uri != null) {
+        isDrawText = uri == null
+        if (!isDrawText) {
             val circularBitmap = (drawable as BitmapDrawable).bitmap.getCircularBitmap()
             setImageBitmap(circularBitmap)
         }
@@ -54,17 +62,18 @@ class ContactImageView(
         centerX = (newWidth / 2).toFloat()
         centerY = (newHeight / 2).toFloat()
         centerRadius = (newWidth / 2).toFloat()
-
-        val textBounds = Rect()
-        textPaint.getTextBounds(firstLetter, 0, 1, textBounds)
-        textY = height / 2f + textBounds.height() / 2f
+        if (text.isNotEmpty()) {
+            val textBounds = Rect()
+            textPaint.getTextBounds(text, 0, text.length, textBounds)
+            textY = height / 2f + textBounds.height() / 2f
+        }
     }
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        if (firstLetter.isNotBlank()) {
+        if (isDrawText) {
             canvas?.drawCircle(centerX, centerY, centerRadius, circlePaint)
-            canvas?.drawText(firstLetter, centerX, textY, textPaint)
+            canvas?.drawText(text, centerX, textY, textPaint)
         }
     }
 }
