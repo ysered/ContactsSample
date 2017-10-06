@@ -33,8 +33,6 @@ class ContactsObserver(
             Contacts.SORT_KEY_PRIMARY
     )
 
-    override fun onLoaderReset(loader: Loader<Cursor>?) = Unit
-
     override fun onLoadFinished(loader: Loader<Cursor>?, cursor: Cursor?) {
         cursor?.let {
             val contactList = mutableListOf<Contact>()
@@ -45,4 +43,6 @@ class ContactsObserver(
             contactsLiveData.postValue(contactList)
         }
     }
+
+    override fun onLoaderReset(loader: Loader<Cursor>?) = Unit
 }
