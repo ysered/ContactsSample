@@ -2,4 +2,8 @@
 <resources>
     <dimen name="marginDefault">16dp</dimen>
     <dimen name="marginSmall">8dp</dimen>
+
+    <dimen name="bigContactPhotoHeight">300dp</dimen>
+    <dimen name="expandedTitleMarginEnd">64dp</dimen>
+    <dimen name="expandedTitleMarginStart">48dp</dimen>
 </resources>
