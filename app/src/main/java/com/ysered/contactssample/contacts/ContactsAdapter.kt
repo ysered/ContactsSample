@@ -48,6 +48,7 @@ class ContactsAdapter(private val callback: Callback) : RecyclerView.Adapter<Con
             else
                 photoImage.setImageURI(contact.photoUri)
             displayNameText.text = contact.displayName
+            photoImage.contentDescription = contact.displayName
         }
     }
 
