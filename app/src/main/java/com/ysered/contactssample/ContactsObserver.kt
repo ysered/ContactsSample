@@ -12,6 +12,7 @@ import android.support.v4.content.Loader
 import com.ysered.contactssample.data.Contact
 import com.ysered.contactssample.utils.forEach
 import com.ysered.contactssample.utils.getString
+import com.ysered.contactssample.utils.getUri
 
 
 class ContactsObserver(
@@ -37,7 +38,7 @@ class ContactsObserver(
         cursor?.let {
             val contactList = mutableListOf<Contact>()
             it.forEach {
-                val photoUri = getString(Contacts.PHOTO_URI)
+                val photoUri = getUri(Contacts.PHOTO_URI)
                 val displayName = getString(Contacts.DISPLAY_NAME)
                 contactList.add(Contact(photoUri, displayName))
             }

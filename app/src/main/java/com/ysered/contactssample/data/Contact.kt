@@ -1,3 +1,5 @@
 package com.ysered.contactssample.data
 
-data class Contact(val photoUri: String?, val displayName: String)
+import android.net.Uri
+
+data class Contact(val photoUri: Uri?, val displayName: String)
