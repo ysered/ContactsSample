@@ -1,4 +1,4 @@
-package com.ysered.contactssample
+package com.ysered.contactssample.contacts
 
 import android.Manifest
 import android.arch.lifecycle.LifecycleOwner
@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import com.ysered.contactssample.R
 import com.ysered.contactssample.utils.debug
 import com.ysered.contactssample.utils.processPermissionResults
 import com.ysered.contactssample.utils.requestPermissionsIfNeeded

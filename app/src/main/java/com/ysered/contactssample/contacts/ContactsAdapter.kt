@@ -1,10 +1,11 @@
-package com.ysered.contactssample
+package com.ysered.contactssample.contacts
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.ysered.contactssample.R
 import com.ysered.contactssample.data.Contact
 import com.ysered.contactssample.views.ContactImageView
 

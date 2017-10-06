@@ -1,4 +1,4 @@
-package com.ysered.contactssample
+package com.ysered.contactssample.contacts
 
 import android.arch.lifecycle.LifecycleObserver
 import android.arch.lifecycle.MutableLiveData
