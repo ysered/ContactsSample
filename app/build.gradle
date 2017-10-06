@@ -38,8 +38,8 @@ dependencies {
     implementation "com.android.support.constraint:constraint-layout:$constraintLayoutVersion"
 
     // Architecture components
-    compile "android.arch.lifecycle:extensions:$archVersion"
-    compile "android.arch.lifecycle:runtime:$archVersion"
+    implementation "android.arch.lifecycle:extensions:$archVersion"
+    implementation "android.arch.lifecycle:runtime:$archVersion"
     kapt "android.arch.lifecycle:compiler:$archVersion"
 
     testImplementation "junit:junit:$junitVersion"
