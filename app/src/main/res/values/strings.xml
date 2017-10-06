@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ContactsSample</string>
+    <string name="add_contacts_permission">Please add contacts permission</string>
 </resources>
