@@ -59,9 +59,9 @@ class ContactImageView(
 
     override fun onSizeChanged(newWidth: Int, newHeight: Int, oldWidth: Int, oldHeight: Int) {
         super.onSizeChanged(newWidth, newHeight, oldWidth, oldHeight)
-        centerX = (newWidth / 2).toFloat()
-        centerY = (newHeight / 2).toFloat()
-        centerRadius = (newWidth / 2).toFloat()
+        centerX = newWidth / 2f
+        centerY = newHeight / 2f
+        centerRadius = newWidth / 2f
         if (text.isNotEmpty()) {
             val textBounds = Rect()
             textPaint.getTextBounds(text, 0, text.length, textBounds)
