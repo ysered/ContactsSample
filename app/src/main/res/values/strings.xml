@@ -8,4 +8,7 @@
     <string name="phone_type_home">Home</string>
     <string name="phone_type_other">Other</string>
     <string name="phone_type_work">Work</string>
+
+    <string name="menu_item_edit">Edit</string>
+    <string name="menu_item_more">More</string>
 </resources>

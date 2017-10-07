@@ -4,7 +4,10 @@ import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.CollapsingToolbarLayout
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
+import android.view.Menu
 import android.widget.ImageView
 import com.ysered.contactssample.R
 import com.ysered.contactssample.data.Contact
@@ -25,13 +28,20 @@ class DetailsActivity : AppCompatActivity() {
 
     private val contact by lazy { intent?.getContactExtra() }
     private val photoImage by lazy { findViewById<ImageView>(R.id.contactPhotoImage) }
+    private val collapsingToolbar by lazy { findViewById<CollapsingToolbarLayout>(R.id.collapsingToolbar) }
+    private val toolbar by lazy { findViewById<Toolbar>(R.id.toolbar) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
 
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         if (contact != null) {
+            collapsingToolbar.title = contact!!.displayName
             photoImage.setImageURI(contact!!.photoUri)
+
             val observer = ContactDetailsObserver(this, contact!!.id).apply {
                 phonesData.observe(this@DetailsActivity, Observer { phones ->
                     info("Received phones: $phones")
@@ -43,5 +53,10 @@ class DetailsActivity : AppCompatActivity() {
             showToast(R.string.cannot_find_contact)
             finish()
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_contact_details, menu)
+        return true
     }
 }
