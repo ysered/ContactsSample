@@ -11,6 +11,7 @@ import android.support.v4.content.CursorLoader
 import android.support.v4.content.Loader
 import com.ysered.contactssample.data.Contact
 import com.ysered.contactssample.utils.forEach
+import com.ysered.contactssample.utils.getInt
 import com.ysered.contactssample.utils.getString
 import com.ysered.contactssample.utils.getUri
 
@@ -20,7 +21,12 @@ class ContactsObserver(
 ) : LifecycleObserver, LoaderManager.LoaderCallbacks<Cursor> {
 
     companion object {
-        private val PROJECTION = arrayOf(Contacts.PHOTO_URI, Contacts.DISPLAY_NAME)
+        private val PROJECTION = arrayOf(
+                Contacts._ID,
+                Contacts.PHOTO_THUMBNAIL_URI,
+                Contacts.PHOTO_URI,
+                Contacts.DISPLAY_NAME
+        )
     }
 
     val contactsLiveData = MutableLiveData<List<Contact>>()
@@ -38,9 +44,11 @@ class ContactsObserver(
         cursor?.let {
             val contactList = mutableListOf<Contact>()
             it.forEach {
+                val id = getString(Contacts._ID)
+                val thumbnailUri = getUri(Contacts.PHOTO_THUMBNAIL_URI)
                 val photoUri = getUri(Contacts.PHOTO_URI)
                 val displayName = getString(Contacts.DISPLAY_NAME)
-                contactList.add(Contact(photoUri, displayName))
+                contactList.add(Contact(id, thumbnailUri, photoUri, displayName))
             }
             contactsLiveData.postValue(contactList)
         }

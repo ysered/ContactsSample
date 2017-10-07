@@ -38,21 +38,21 @@ class ContactsAdapter(private val callback: Callback) : RecyclerView.Adapter<Con
             // TODO: find better way
             setIsRecyclable(false)
             itemView.setOnClickListener {
-                callback.onClick()
+                callback.onClick(contacts[adapterPosition])
             }
         }
 
         fun bind(contact: Contact) {
-            if (contact.photoUri == null)
+            if (contact.thumbnailUri == null)
                 photoImage.text = contact.displayName
             else
-                photoImage.setImageURI(contact.photoUri)
+                photoImage.setImageURI(contact.thumbnailUri)
             displayNameText.text = contact.displayName
             photoImage.contentDescription = contact.displayName
         }
     }
 
     interface Callback {
-        fun onClick()
+        fun onClick(contact: Contact)
     }
 }

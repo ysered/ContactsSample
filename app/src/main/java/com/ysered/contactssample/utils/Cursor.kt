@@ -6,7 +6,7 @@ import android.database.Cursor
 import android.net.Uri
 
 /**
- * Iterates through [Cursor] and executes action in its context.
+ * Iterates through [Cursor] and executes [body] in its context.
  */
 fun Cursor.forEach(body: Cursor.(cursor: Cursor) -> Unit) {
     if (!isClosed && count > 0 && moveToFirst()) {
@@ -16,6 +16,8 @@ fun Cursor.forEach(body: Cursor.(cursor: Cursor) -> Unit) {
         }
     }
 }
+
+fun Cursor.getInt(name: String): Int = getInt(getColumnIndex(name))
 
 fun Cursor.getString(name: String): String = getString(getColumnIndex(name)) ?: ""
 
