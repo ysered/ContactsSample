@@ -59,4 +59,9 @@ class DetailsActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu_contact_details, menu)
         return true
     }
+
+    override fun onSupportNavigateUp(): Boolean {
+        finish()
+        return true
+    }
 }
