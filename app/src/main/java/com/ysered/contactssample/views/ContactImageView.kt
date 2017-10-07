@@ -2,14 +2,16 @@ package com.ysered.contactssample.views
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
+import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.widget.ImageView
+import com.ysered.contactssample.R
 import com.ysered.contactssample.utils.getCircularBitmap
+import com.ysered.contactssample.utils.getRandomMaterialColor
 
 
 class ContactImageView(
@@ -29,11 +31,11 @@ class ContactImageView(
 
     private val circlePaint = Paint().apply {
         isAntiAlias = true
-        color = Color.LTGRAY // TODO: set random color
+        color = getRandomMaterialColor()
     }
     private val textPaint = Paint().apply {
         isAntiAlias = true
-        color = Color.WHITE
+        color = ContextCompat.getColor(context, R.color.colorWhiteTransparent)
         textAlign = Paint.Align.CENTER
         textSize = 64f // TODO: move to xml attributes
     }
@@ -43,7 +45,7 @@ class ContactImageView(
     var text: String = "?"
         set(value) {
             if (isDrawText && value.trim().isNotEmpty()) {
-                field = value.first().toString()
+                field = value.first().toString().capitalize()
                 invalidate()
             }
         }
