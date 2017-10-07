@@ -10,9 +10,9 @@
 
     <com.ysered.contactssample.views.ContactImageView
         android:id="@+id/photoImage"
-        android:layout_width="?android:attr/listPreferredItemHeight"
-        android:layout_height="?android:attr/listPreferredItemHeight"
-        android:layout_marginStart="@dimen/marginSmall"
+        android:layout_width="?android:attr/listPreferredItemHeightSmall"
+        android:layout_height="?android:attr/listPreferredItemHeightSmall"
+        android:layout_marginStart="@dimen/marginLarge"
         android:adjustViewBounds="true"
         android:contentDescription="@null"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -21,11 +21,12 @@
 
     <TextView
         android:id="@+id/displayNameText"
+        style="@style/ItemContactNameStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/marginSmall"
         android:layout_marginEnd="@dimen/marginDefault"
-        android:layout_marginStart="@dimen/marginSmall"
+        android:layout_marginStart="@dimen/marginLarge"
         android:layout_marginTop="@dimen/marginSmall"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
