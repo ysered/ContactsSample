@@ -11,4 +11,7 @@
 
     <string name="menu_item_edit">Edit</string>
     <string name="menu_item_more">More</string>
+
+    <string name="send_message">Send message</string>
+    <string name="call">Call</string>
 </resources>

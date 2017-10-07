@@ -6,6 +6,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.CollapsingToolbarLayout
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.widget.ImageView
@@ -27,6 +29,7 @@ class DetailsActivity : AppCompatActivity() {
     }
 
     private val contact by lazy { intent?.getContactExtra() }
+
     private val photoImage by lazy { findViewById<ImageView>(R.id.contactPhotoImage) }
     private val collapsingToolbar by lazy { findViewById<CollapsingToolbarLayout>(R.id.collapsingToolbar) }
     private val toolbar by lazy { findViewById<Toolbar>(R.id.toolbar) }
@@ -45,9 +48,16 @@ class DetailsActivity : AppCompatActivity() {
             else
                 photoImage.setImageResource(R.drawable.bg_contact)
 
+            val detailsAdapter = DetailsAdapter()
+            findViewById<RecyclerView>(R.id.contactDataRv).apply {
+                adapter = detailsAdapter
+                layoutManager = LinearLayoutManager(this@DetailsActivity)
+            }
+
             val observer = ContactDetailsObserver(this, contact!!.id).apply {
                 phonesData.observe(this@DetailsActivity, Observer { phones ->
                     info("Received phones: $phones")
+                    phones?.let { detailsAdapter.phones = it }
                 })
             }
             lifecycle.addObserver(observer)
