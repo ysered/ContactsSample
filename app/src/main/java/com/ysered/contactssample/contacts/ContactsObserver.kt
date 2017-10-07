@@ -10,8 +10,8 @@ import android.support.v4.app.LoaderManager
 import android.support.v4.content.CursorLoader
 import android.support.v4.content.Loader
 import com.ysered.contactssample.data.Contact
+import com.ysered.contactssample.data.getContact
 import com.ysered.contactssample.utils.forEach
-import com.ysered.contactssample.utils.getContact
 
 
 class ContactsObserver(
@@ -23,7 +23,8 @@ class ContactsObserver(
                 Contacts._ID,
                 Contacts.PHOTO_THUMBNAIL_URI,
                 Contacts.PHOTO_URI,
-                Contacts.DISPLAY_NAME
+                Contacts.DISPLAY_NAME,
+                Contacts.HAS_PHONE_NUMBER
         )
     }
 

@@ -4,8 +4,6 @@ package com.ysered.contactssample.utils
 
 import android.database.Cursor
 import android.net.Uri
-import android.provider.ContactsContract
-import com.ysered.contactssample.data.Contact
 
 /**
  * Iterates through [Cursor] and executes [body] in its context.
@@ -23,21 +21,12 @@ fun Cursor.getInt(name: String): Int = getInt(getColumnIndex(name))
 
 fun Cursor.getString(name: String): String = getString(getColumnIndex(name)) ?: ""
 
+fun Cursor.getBoolean(name: String): Boolean = getInt(name) == 1
+
 fun Cursor.getUri(name: String): Uri? {
     val uriString = getString(name)
     return if (uriString.isNotBlank())
         Uri.parse(uriString)
     else
         null
-}
-
-/**
- * Reads data contacts content provider into [Contact] object.
- */
-fun Cursor.getContact(): Contact {
-    val id = getString(ContactsContract.Contacts._ID)
-    val thumbnailUri = getUri(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI)
-    val photoUri = getUri(ContactsContract.Contacts.PHOTO_URI)
-    val displayName = getString(ContactsContract.Contacts.DISPLAY_NAME)
-    return Contact(id, thumbnailUri, photoUri, displayName)
 }

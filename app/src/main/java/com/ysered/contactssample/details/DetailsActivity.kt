@@ -29,10 +29,10 @@ class DetailsActivity : AppCompatActivity() {
     }
 
     private val contact by lazy { intent?.getContactExtra() }
-
     private val photoImage by lazy { findViewById<ImageView>(R.id.contactPhotoImage) }
     private val collapsingToolbar by lazy { findViewById<CollapsingToolbarLayout>(R.id.collapsingToolbar) }
     private val toolbar by lazy { findViewById<Toolbar>(R.id.toolbar) }
+    private val detailsAdapter by lazy { DetailsAdapter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,28 +40,14 @@ class DetailsActivity : AppCompatActivity() {
 
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        findViewById<RecyclerView>(R.id.contactDataRv).apply {
+            adapter = detailsAdapter
+            layoutManager = LinearLayoutManager(this@DetailsActivity)
+        }
 
         if (contact != null) {
-            collapsingToolbar.title = contact!!.displayName
-            if (contact!!.photoUri != null)
-                photoImage.setImageURI(contact!!.photoUri)
-            else
-                photoImage.setImageResource(R.drawable.bg_contact)
-
-            val detailsAdapter = DetailsAdapter()
-            findViewById<RecyclerView>(R.id.contactDataRv).apply {
-                adapter = detailsAdapter
-                layoutManager = LinearLayoutManager(this@DetailsActivity)
-            }
-
-            val observer = ContactDetailsObserver(this, contact!!.id).apply {
-                phonesData.observe(this@DetailsActivity, Observer { phones ->
-                    info("Received phones: $phones")
-                    phones?.let { detailsAdapter.phones = it }
-                })
-            }
-            lifecycle.addObserver(observer)
-            supportLoaderManager.initLoader(ContactDetailsObserver.PHONES_LOADER, null, observer)
+            showContact(contact!!)
+            initPhonesLoader()
         } else {
             showToast(R.string.cannot_find_contact)
             finish()
@@ -76,5 +62,26 @@ class DetailsActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         finish()
         return true
+    }
+
+    private fun showContact(contact: Contact) {
+        collapsingToolbar.title = contact.displayName
+        if (contact.photoUri != null)
+            photoImage.setImageURI(contact.photoUri)
+        else
+            photoImage.setImageResource(R.drawable.bg_contact)
+    }
+
+    private fun initPhonesLoader() {
+        if (contact!!.hasPhoneNumber) {
+            val observer = ContactDetailsObserver(this, contact!!.id).apply {
+                phonesData.observe(this@DetailsActivity, Observer { phones ->
+                    info("Received phones: $phones")
+                    phones?.let { detailsAdapter.phones = it }
+                })
+            }
+            lifecycle.addObserver(observer)
+            supportLoaderManager.initLoader(ContactDetailsObserver.PHONES_LOADER, null, observer)
+        }
     }
 }
