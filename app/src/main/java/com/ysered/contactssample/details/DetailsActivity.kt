@@ -40,7 +40,10 @@ class DetailsActivity : AppCompatActivity() {
 
         if (contact != null) {
             collapsingToolbar.title = contact!!.displayName
-            photoImage.setImageURI(contact!!.photoUri)
+            if (contact!!.photoUri != null)
+                photoImage.setImageURI(contact!!.photoUri)
+            else
+                photoImage.setImageResource(R.drawable.bg_contact)
 
             val observer = ContactDetailsObserver(this, contact!!.id).apply {
                 phonesData.observe(this@DetailsActivity, Observer { phones ->

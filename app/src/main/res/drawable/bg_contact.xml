@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <color android:color="@color/colorGray500" />
+    </item>
+    <item
+        android:bottom="@dimen/marginLarge"
+        android:drawable="@drawable/ic_person"
+        android:left="@dimen/marginLarge"
+        android:right="@dimen/marginLarge"
+        android:top="@dimen/marginLarge" />
+</layer-list>
