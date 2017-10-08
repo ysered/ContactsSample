@@ -4,10 +4,10 @@
     <string name="add_contacts_permission">Please add contacts permission</string>
     <string name="cannot_find_contact">Cannot find contact</string>
 
-    <string name="phone_type_mobile">Mobile</string>
-    <string name="phone_type_home">Home</string>
-    <string name="phone_type_other">Other</string>
-    <string name="phone_type_work">Work</string>
+    <string name="item_type_mobile">Mobile</string>
+    <string name="item_type_home">Home</string>
+    <string name="item_type_other">Other</string>
+    <string name="item_type_work">Work</string>
 
     <string name="menu_item_edit">Edit</string>
     <string name="menu_item_more">More</string>
