@@ -17,7 +17,6 @@ import android.view.Menu
 import android.widget.ImageView
 import com.ysered.contactssample.R
 import com.ysered.contactssample.data.*
-import com.ysered.contactssample.utils.debug
 import com.ysered.contactssample.utils.forEach
 import com.ysered.contactssample.utils.showToast
 
@@ -74,7 +73,6 @@ class DetailsActivity : AppCompatActivity() {
         }
 
         override fun onLoadFinished(loader: Loader<Cursor>?, cursor: Cursor?) {
-            debug(">>>>>>>>>> On load finished. Loader ID: ${loader?.id}")
             if (loader != null && cursor != null) {
                 when (loader.id) {
                     PHONES_LOADER -> {

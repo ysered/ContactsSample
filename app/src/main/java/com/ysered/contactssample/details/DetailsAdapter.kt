@@ -26,14 +26,17 @@ class DetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         class Email(val kind: String, val data: String, val isFirst: Boolean = false) : Item(TYPE_EMAIL)
     }
 
+    private val lastPosition: Int
+        get() = if (itemCount > 0) itemCount - 1 else 0
+
     var phones: List<Phone> = emptyList()
         set(value) {
             if (value.isNotEmpty()) {
                 items.add(Item.Separator())
-                notifyItemInserted(0)
+                notifyItemInserted(lastPosition)
                 value.forEachIndexed { index, phone ->
                     items.add(Item.Phone(phone.kind, phone.number, isFirst = index == 0))
-                    notifyItemInserted(itemCount - 1)
+                    notifyItemInserted(lastPosition)
                 }
             }
         }
@@ -42,10 +45,10 @@ class DetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         set(value) {
             field = value
             items.add(Item.Separator())
-            notifyItemInserted(itemCount - 1)
+            notifyItemInserted(lastPosition)
             value.forEachIndexed { index, email ->
                 items.add(Item.Email(email.kind, email.address, isFirst = index == 0))
-                notifyItemInserted(itemCount - 1)
+                notifyItemInserted(lastPosition)
             }
         }
 
