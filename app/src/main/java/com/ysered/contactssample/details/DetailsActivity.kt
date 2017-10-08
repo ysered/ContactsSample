@@ -29,17 +29,24 @@ class DetailsActivity : AppCompatActivity() {
     }
 
     private val contact by lazy { intent?.getContactExtra() }
-    private val photoImage by lazy { findViewById<ImageView>(R.id.contactPhotoImage) }
-    private val collapsingToolbar by lazy { findViewById<CollapsingToolbarLayout>(R.id.collapsingToolbar) }
-    private val toolbar by lazy { findViewById<Toolbar>(R.id.toolbar) }
-    private val detailsAdapter by lazy { DetailsAdapter() }
+
+    private lateinit var collapsingToolbar: CollapsingToolbarLayout
+    private lateinit var toolbar: Toolbar
+    private lateinit var photoImage: ImageView
+    private lateinit var detailsAdapter: DetailsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
 
+        // init views
+        collapsingToolbar = findViewById(R.id.collapsingToolbar)
+        toolbar = findViewById(R.id.toolbar)
+        photoImage = findViewById(R.id.contactPhotoImage)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        detailsAdapter = DetailsAdapter()
         findViewById<RecyclerView>(R.id.contactDataRv).apply {
             adapter = detailsAdapter
             layoutManager = LinearLayoutManager(this@DetailsActivity)
