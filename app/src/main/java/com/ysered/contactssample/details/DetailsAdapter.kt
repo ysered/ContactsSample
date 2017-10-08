@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.ysered.contactssample.R
+import com.ysered.contactssample.data.Address
 import com.ysered.contactssample.data.Email
 import com.ysered.contactssample.data.Phone
 import com.ysered.contactssample.utils.isVisible
@@ -18,41 +19,35 @@ class DetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val TYPE_SEPARATOR = 0
         val TYPE_PHONE = 1
         val TYPE_EMAIL = 2
+        val TYPE_ADDRESS = 3
     }
 
     private sealed class Item(val itemType: Int) {
         class Separator : Item(TYPE_SEPARATOR)
         class Phone(val kind: String, val data: String, val isFirst: Boolean = false) : Item(TYPE_PHONE)
         class Email(val kind: String, val data: String, val isFirst: Boolean = false) : Item(TYPE_EMAIL)
+        class Address(val kind: String, val data: String, val isFirst: Boolean = false) : Item(TYPE_ADDRESS)
     }
 
+    private var items: MutableList<Item> = mutableListOf()
     private val lastPosition: Int
         get() = if (itemCount > 0) itemCount - 1 else 0
 
     var phones: List<Phone> = emptyList()
         set(value) {
-            if (value.isNotEmpty()) {
-                items.add(Item.Separator())
-                notifyItemInserted(lastPosition)
-                value.forEachIndexed { index, phone ->
-                    items.add(Item.Phone(phone.kind, phone.number, isFirst = index == 0))
-                    notifyItemInserted(lastPosition)
-                }
-            }
+            field = value
+            updateItems()
         }
-
     var emails: List<Email> = emptyList()
         set(value) {
             field = value
-            items.add(Item.Separator())
-            notifyItemInserted(lastPosition)
-            value.forEachIndexed { index, email ->
-                items.add(Item.Email(email.kind, email.address, isFirst = index == 0))
-                notifyItemInserted(lastPosition)
-            }
+            updateItems()
         }
-
-    private var items: MutableList<Item> = mutableListOf()
+    var addresses: List<Address> = emptyList()
+        set(value) {
+            field = value
+            updateItems()
+        }
 
     override fun getItemViewType(position: Int): Int = items[position].itemType
 
@@ -75,6 +70,37 @@ class DetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun getItemCount(): Int = items.size
+
+    // TODO: optimize!
+    private fun updateItems() {
+        items.clear()
+        notifyDataSetChanged()
+
+        if (phones.isNotEmpty()) {
+            items.add(Item.Separator())
+            notifyItemInserted(lastPosition)
+            phones.forEachIndexed { index, phone ->
+                items.add(Item.Phone(phone.kind, phone.number, isFirst = index == 0))
+                notifyItemInserted(lastPosition)
+            }
+        }
+        if (emails.isNotEmpty()) {
+            items.add(Item.Separator())
+            notifyItemInserted(lastPosition)
+            emails.forEachIndexed { index, email ->
+                items.add(Item.Email(email.kind, email.address, isFirst = index == 0))
+                notifyItemInserted(lastPosition)
+            }
+        }
+        if (addresses.isNotEmpty()) {
+            items.add(Item.Separator())
+            notifyItemInserted(lastPosition)
+            addresses.forEachIndexed { index, address ->
+                items.add(Item.Address(address.kind, address.fullAddress, isFirst = index == 0))
+                notifyItemInserted(lastPosition)
+            }
+        }
+    }
 
     private inner class SeparatorViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
@@ -100,9 +126,15 @@ class DetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     dataText.text = item.data
                     dataKindText.text = item.kind
                 }
+                is Item.Address -> {
+                    dataIcon.setImageResource(R.drawable.ic_place)
+                    appIconImage.setImageResource(R.drawable.ic_directions)
+                    dataIcon.isVisible = item.isFirst
+                    dataText.text = item.data
+                    dataKindText.text = item.kind
+                }
                 else -> throw RuntimeException("Unknown item type: ${item::class}")
             }
-
         }
     }
 }

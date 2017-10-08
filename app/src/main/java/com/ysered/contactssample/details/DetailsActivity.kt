@@ -26,11 +26,15 @@ class DetailsActivity : AppCompatActivity() {
     companion object {
         private val PHONES_LOADER = 0
         private val EMAILS_LOADER = 1
+        private val ADDRESSES_LOADER = 2
 
-        private val PHONE_SELECTION = "${ContactsContract.CommonDataKinds.Phone.CONTACT_ID} = ?"
+        private val PHONES_SELECTION = "${ContactsContract.CommonDataKinds.Phone.CONTACT_ID} = ?"
         private val PHONES_SORT_ORDER = ContactsContract.CommonDataKinds.Phone.SORT_KEY_PRIMARY
 
-        private val EMAIL_SELECTION = "${ContactsContract.CommonDataKinds.Email.CONTACT_ID} = ?"
+        private val ADDRESSES_SELECTION = "${ContactsContract.CommonDataKinds.StructuredPostal.CONTACT_ID} = ?"
+        private val ADDRESSES_SORT_ORDER = ContactsContract.CommonDataKinds.StructuredPostal.SORT_KEY_PRIMARY
+
+        private val EMAILS_SELECTION = "${ContactsContract.CommonDataKinds.Email.CONTACT_ID} = ?"
         private val EMAILS_SORT_ORDER = ContactsContract.CommonDataKinds.Email.SORT_KEY_PRIMARY
 
         fun start(context: Context, contact: Contact) {
@@ -55,7 +59,7 @@ class DetailsActivity : AppCompatActivity() {
                             this@DetailsActivity,
                             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                             null,
-                            PHONE_SELECTION,
+                            PHONES_SELECTION,
                             selectionArgs,
                             PHONES_SORT_ORDER)
                 }
@@ -64,9 +68,18 @@ class DetailsActivity : AppCompatActivity() {
                             this@DetailsActivity,
                             ContactsContract.CommonDataKinds.Email.CONTENT_URI,
                             null,
-                            EMAIL_SELECTION,
+                            EMAILS_SELECTION,
                             selectionArgs,
                             EMAILS_SORT_ORDER)
+                }
+                ADDRESSES_LOADER -> {
+                    CursorLoader(
+                            this@DetailsActivity,
+                            ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_URI,
+                            null,
+                            ADDRESSES_SELECTION,
+                            selectionArgs,
+                            ADDRESSES_SORT_ORDER)
                 }
                 else -> throw RuntimeException("Unknown loader id: $id")
             }
@@ -90,6 +103,14 @@ class DetailsActivity : AppCompatActivity() {
                         }
                         if (emails.isNotEmpty())
                             detailsAdapter.emails = emails
+                    }
+                    ADDRESSES_LOADER -> {
+                        val addresses = mutableListOf<Address>()
+                        cursor.forEach {
+                            getAddress(this@DetailsActivity)?.let { addresses.add(it) }
+                        }
+                        if (addresses.isNotEmpty())
+                            detailsAdapter.addresses = addresses
                     }
                     else -> throw RuntimeException("Unknown loader id: ${loader.id}")
                 }
@@ -120,6 +141,7 @@ class DetailsActivity : AppCompatActivity() {
             showContact(contact!!)
             supportLoaderManager.initLoader(PHONES_LOADER, null, loaderCallbacks)
             supportLoaderManager.initLoader(EMAILS_LOADER, null, loaderCallbacks)
+            supportLoaderManager.initLoader(ADDRESSES_LOADER, null, loaderCallbacks)
         } else {
             showToast(R.string.cannot_find_contact)
             finish()
