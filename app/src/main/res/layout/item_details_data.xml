@@ -9,7 +9,7 @@
     android:focusable="true">
 
     <ImageView
-        android:id="@+id/phoneImage"
+        android:id="@+id/dataIconImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/marginDefault"
@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/phoneText"
+        android:id="@+id/dataText"
         style="@style/ItemTitleTextStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -29,30 +29,30 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textAppearance="?attr/textAppearanceListItem"
-        app:layout_constraintBottom_toTopOf="@+id/phoneTypeText"
-        app:layout_constraintEnd_toStartOf="@+id/messageImage"
+        app:layout_constraintBottom_toTopOf="@+id/dataKindText"
+        app:layout_constraintEnd_toStartOf="@+id/appIconImage"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/phoneImage"
+        app:layout_constraintStart_toEndOf="@+id/dataIconImage"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.53"
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="1122334455667788" />
 
     <TextView
-        android:id="@+id/phoneTypeText"
+        android:id="@+id/dataKindText"
         style="@style/ItemSubtitleTextStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/phoneText"
+        app:layout_constraintEnd_toEndOf="@+id/dataText"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/phoneText"
-        app:layout_constraintTop_toBottomOf="@+id/phoneText"
+        app:layout_constraintStart_toStartOf="@+id/dataText"
+        app:layout_constraintTop_toBottomOf="@+id/dataText"
         tools:text="Mobile" />
 
     <ImageView
-        android:id="@+id/messageImage"
+        android:id="@+id/appIconImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/marginLarge"
@@ -61,7 +61,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/phoneImage"
+        app:layout_constraintStart_toEndOf="@+id/dataIconImage"
         app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

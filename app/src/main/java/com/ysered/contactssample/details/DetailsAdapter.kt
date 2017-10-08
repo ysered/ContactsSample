@@ -7,51 +7,99 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.ysered.contactssample.R
+import com.ysered.contactssample.data.Email
 import com.ysered.contactssample.data.Phone
 import com.ysered.contactssample.utils.isVisible
 
 
-class DetailsAdapter : RecyclerView.Adapter<DetailsAdapter.ViewHolder>() {
+class DetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
-        val TYPE_PHONE_ICON = 0
+        val TYPE_SEPARATOR = 0
         val TYPE_PHONE = 1
+        val TYPE_EMAIL = 2
+    }
+
+    private sealed class Item(val itemType: Int) {
+        class Separator : Item(TYPE_SEPARATOR)
+        class Phone(val kind: String, val data: String, val isFirst: Boolean = false) : Item(TYPE_PHONE)
+        class Email(val kind: String, val data: String, val isFirst: Boolean = false) : Item(TYPE_EMAIL)
     }
 
     var phones: List<Phone> = emptyList()
         set(value) {
+            if (value.isNotEmpty()) {
+                items.add(Item.Separator())
+                notifyItemInserted(0)
+                value.forEachIndexed { index, phone ->
+                    items.add(Item.Phone(phone.kind, phone.number, isFirst = index == 0))
+                    notifyItemInserted(itemCount - 1)
+                }
+            }
+        }
+
+    var emails: List<Email> = emptyList()
+        set(value) {
             field = value
-            notifyDataSetChanged()
+            items.add(Item.Separator())
+            notifyItemInserted(itemCount - 1)
+            value.forEachIndexed { index, email ->
+                items.add(Item.Email(email.kind, email.address, isFirst = index == 0))
+                notifyItemInserted(itemCount - 1)
+            }
         }
 
-    override fun getItemViewType(position: Int): Int = if (position == 0)
-        TYPE_PHONE_ICON
-    else
-        TYPE_PHONE
+    private var items: MutableList<Item> = mutableListOf()
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent?.context)
-                .inflate(R.layout.item_phone, parent, false)
-        return ViewHolder(view, isShowPhoneIcon = viewType == TYPE_PHONE_ICON)
-    }
+    override fun getItemViewType(position: Int): Int = items[position].itemType
 
-    override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
-        holder?.bind(phones[position])
-    }
-
-    override fun getItemCount(): Int = phones.size
-
-    inner class ViewHolder(itemView: View, isShowPhoneIcon: Boolean) : RecyclerView.ViewHolder(itemView) {
-        private val phoneText = itemView.findViewById<TextView>(R.id.phoneText)
-        private val phoneTypeText = itemView.findViewById<TextView>(R.id.phoneTypeText)
-
-        init {
-            itemView.findViewById<ImageView>(R.id.phoneImage).apply { isVisible = isShowPhoneIcon }
+    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent?.context)
+        return if (viewType == TYPE_SEPARATOR) {
+            val view = inflater.inflate(R.layout.item_separator, parent, false)
+            SeparatorViewHolder(view)
+        } else {
+            val view = inflater.inflate(R.layout.item_details_data, parent, false)
+            ItemViewHolder(view)
         }
+    }
 
-        fun bind(phone: Phone) {
-            phoneText.text = phone.number
-            phoneTypeText.text = phone.type
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
+        val item = items[position]
+        if (item.itemType != TYPE_SEPARATOR) {
+            (holder as? ItemViewHolder)?.bind(item)
+        }
+    }
+
+    override fun getItemCount(): Int = items.size
+
+    private inner class SeparatorViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+    private inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val dataIcon = itemView.findViewById<ImageView>(R.id.dataIconImage)
+        private val dataKindText = itemView.findViewById<TextView>(R.id.dataKindText)
+        private val dataText = itemView.findViewById<TextView>(R.id.dataText)
+        private val appIconImage = itemView.findViewById<ImageView>(R.id.appIconImage)
+
+        fun bind(item: Item) {
+            when (item) {
+                is Item.Phone -> {
+                    dataIcon.setImageResource(R.drawable.ic_phone)
+                    appIconImage.setImageResource(R.drawable.ic_message)
+                    dataIcon.isVisible = item.isFirst
+                    dataText.text = item.data
+                    dataKindText.text = item.kind
+                }
+                is Item.Email -> {
+                    dataIcon.setImageResource(R.drawable.ic_email)
+                    appIconImage.isVisible = false
+                    dataIcon.isVisible = item.isFirst
+                    dataText.text = item.data
+                    dataKindText.text = item.kind
+                }
+                else -> throw RuntimeException("Unknown item type: ${item::class}")
+            }
+
         }
     }
 }

@@ -17,6 +17,7 @@ import android.view.Menu
 import android.widget.ImageView
 import com.ysered.contactssample.R
 import com.ysered.contactssample.data.*
+import com.ysered.contactssample.utils.debug
 import com.ysered.contactssample.utils.forEach
 import com.ysered.contactssample.utils.showToast
 
@@ -25,8 +26,13 @@ class DetailsActivity : AppCompatActivity() {
 
     companion object {
         private val PHONES_LOADER = 0
-        private val PHONES_SELECTION = "${ContactsContract.CommonDataKinds.Phone.CONTACT_ID} = ?"
+        private val EMAILS_LOADER = 1
+
+        private val PHONE_SELECTION = "${ContactsContract.CommonDataKinds.Phone.CONTACT_ID} = ?"
         private val PHONES_SORT_ORDER = ContactsContract.CommonDataKinds.Phone.SORT_KEY_PRIMARY
+
+        private val EMAIL_SELECTION = "${ContactsContract.CommonDataKinds.Email.CONTACT_ID} = ?"
+        private val EMAILS_SORT_ORDER = ContactsContract.CommonDataKinds.Email.SORT_KEY_PRIMARY
 
         fun start(context: Context, contact: Contact) {
             val intent = Intent(context, DetailsActivity::class.java).putExtra(contact)
@@ -42,22 +48,33 @@ class DetailsActivity : AppCompatActivity() {
     private lateinit var detailsAdapter: DetailsAdapter
 
     private val loaderCallbacks = object : LoaderManager.LoaderCallbacks<Cursor> {
-        override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> = when (id) {
-            PHONES_LOADER -> {
-                val selectionArgs = arrayOf(contact!!.id)
-                CursorLoader(
-                        this@DetailsActivity,
-                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                        null,
-                        PHONES_SELECTION,
-                        selectionArgs,
-                        PHONES_SORT_ORDER
-                )
+        override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
+            val selectionArgs = arrayOf(contact!!.id)
+            return when (id) {
+                PHONES_LOADER -> {
+                    CursorLoader(
+                            this@DetailsActivity,
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
+                            PHONE_SELECTION,
+                            selectionArgs,
+                            PHONES_SORT_ORDER)
+                }
+                EMAILS_LOADER -> {
+                    CursorLoader(
+                            this@DetailsActivity,
+                            ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+                            null,
+                            EMAIL_SELECTION,
+                            selectionArgs,
+                            EMAILS_SORT_ORDER)
+                }
+                else -> throw RuntimeException("Unknown loader id: $id")
             }
-            else -> throw RuntimeException("Unknown loader id: $id")
         }
 
         override fun onLoadFinished(loader: Loader<Cursor>?, cursor: Cursor?) {
+            debug(">>>>>>>>>> On load finished. Loader ID: ${loader?.id}")
             if (loader != null && cursor != null) {
                 when (loader.id) {
                     PHONES_LOADER -> {
@@ -67,6 +84,14 @@ class DetailsActivity : AppCompatActivity() {
                         }
                         if (phones.isNotEmpty())
                             detailsAdapter.phones = phones
+                    }
+                    EMAILS_LOADER -> {
+                        val emails = mutableListOf<Email>()
+                        cursor.forEach {
+                            getEmail(this@DetailsActivity)?.let { emails.add(it) }
+                        }
+                        if (emails.isNotEmpty())
+                            detailsAdapter.emails = emails
                     }
                     else -> throw RuntimeException("Unknown loader id: ${loader.id}")
                 }
@@ -96,6 +121,7 @@ class DetailsActivity : AppCompatActivity() {
         if (contact != null) {
             showContact(contact!!)
             supportLoaderManager.initLoader(PHONES_LOADER, null, loaderCallbacks)
+            supportLoaderManager.initLoader(EMAILS_LOADER, null, loaderCallbacks)
         } else {
             showToast(R.string.cannot_find_contact)
             finish()
