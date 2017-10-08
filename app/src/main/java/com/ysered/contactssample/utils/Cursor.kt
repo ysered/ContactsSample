@@ -23,6 +23,17 @@ fun Cursor.forEach(body: Cursor.(cursor: Cursor) -> Unit) {
     }
 }
 
+fun <T> Cursor.map(body: Cursor.(cursor: Cursor) -> T): List<T> {
+    val items = mutableListOf<T>()
+    if (!isClosed && count > 0 && moveToFirst()) {
+        while (!isAfterLast) {
+            body(this)?.let { items.add(it) }
+            moveToNext()
+        }
+    }
+    return items
+}
+
 fun Cursor.getInt(name: String): Int = getInt(getColumnIndex(name))
 
 fun Cursor.getString(name: String): String = getString(getColumnIndex(name)) ?: ""

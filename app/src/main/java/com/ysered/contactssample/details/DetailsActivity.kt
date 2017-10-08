@@ -14,7 +14,7 @@ import android.view.Menu
 import com.ysered.contactssample.R
 import com.ysered.contactssample.data.*
 import com.ysered.contactssample.utils.first
-import com.ysered.contactssample.utils.forEach
+import com.ysered.contactssample.utils.map
 import com.ysered.contactssample.utils.showToast
 import kotlinx.android.synthetic.main.activity_details.*
 
@@ -43,9 +43,6 @@ class DetailsActivity : AppCompatActivity() {
             context.startActivity(intent)
         }
     }
-
-    private val contact by lazy { intent?.getContactExtra() }
-    private val detailsAdapter by lazy { DetailsAdapter() }
 
     private val loaderCallbacks = object : LoaderManager.LoaderCallbacks<Cursor> {
         override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
@@ -100,28 +97,13 @@ class DetailsActivity : AppCompatActivity() {
                         }
                     }
                     PHONES_LOADER -> {
-                        val phones = mutableListOf<Phone>()
-                        cursor.forEach {
-                            getPhone(this@DetailsActivity)?.let { phones.add(it) }
-                        }
-                        if (phones.isNotEmpty())
-                            detailsAdapter.phones = phones
+                        detailsAdapter.phones = cursor.map { getPhone(this@DetailsActivity)!! }
                     }
                     EMAILS_LOADER -> {
-                        val emails = mutableListOf<Email>()
-                        cursor.forEach {
-                            getEmail(this@DetailsActivity)?.let { emails.add(it) }
-                        }
-                        if (emails.isNotEmpty())
-                            detailsAdapter.emails = emails
+                        detailsAdapter.emails = cursor.map { getEmail(this@DetailsActivity)!! }
                     }
                     ADDRESSES_LOADER -> {
-                        val addresses = mutableListOf<Address>()
-                        cursor.forEach {
-                            getAddress(this@DetailsActivity)?.let { addresses.add(it) }
-                        }
-                        if (addresses.isNotEmpty())
-                            detailsAdapter.addresses = addresses
+                        detailsAdapter.addresses = cursor.map { getAddress(this@DetailsActivity)!! }
                     }
                     else -> throw RuntimeException("Unknown loader id: ${loader.id}")
                 }
@@ -130,6 +112,9 @@ class DetailsActivity : AppCompatActivity() {
 
         override fun onLoaderReset(loader: Loader<Cursor>?) = Unit
     }
+
+    private val contact by lazy { intent?.getContactExtra() }
+    private val detailsAdapter by lazy { DetailsAdapter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -14,10 +14,7 @@ import com.ysered.contactssample.R
 import com.ysered.contactssample.data.Contact
 import com.ysered.contactssample.data.getContact
 import com.ysered.contactssample.details.DetailsActivity
-import com.ysered.contactssample.utils.forEach
-import com.ysered.contactssample.utils.processPermissionResults
-import com.ysered.contactssample.utils.requestPermissionsIfNeeded
-import com.ysered.contactssample.utils.showToast
+import com.ysered.contactssample.utils.*
 import kotlinx.android.synthetic.main.activity_contacts.*
 
 class ContactsActivity : AppCompatActivity() {
@@ -48,10 +45,7 @@ class ContactsActivity : AppCompatActivity() {
 
         override fun onLoadFinished(loader: Loader<Cursor>?, cursor: Cursor?) {
             cursor?.let {
-                val contacts = mutableListOf<Contact>()
-                cursor.forEach { contacts.add(getContact()) }
-                if (contacts.isNotEmpty())
-                    contactsAdapter.contacts = contacts
+                contactsAdapter.contacts = cursor.map { getContact() }
             }
         }
 
