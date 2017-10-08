@@ -17,13 +17,15 @@ class DetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         val TYPE_SEPARATOR = 0
-        val TYPE_PHONE = 1
-        val TYPE_EMAIL = 2
-        val TYPE_ADDRESS = 3
+        val TYPE_SEPARATOR_LINE = 1
+        val TYPE_PHONE = 2
+        val TYPE_EMAIL = 3
+        val TYPE_ADDRESS = 4
     }
 
     private sealed class Item(val itemType: Int) {
         class Separator : Item(TYPE_SEPARATOR)
+        class SeparatorLine : Item(TYPE_SEPARATOR_LINE)
         class Phone(val kind: String, val data: String, val isFirst: Boolean = false) : Item(TYPE_PHONE)
         class Email(val kind: String, val data: String, val isFirst: Boolean = false) : Item(TYPE_EMAIL)
         class Address(val kind: String, val data: String, val isFirst: Boolean = false) : Item(TYPE_ADDRESS)
@@ -53,12 +55,16 @@ class DetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent?.context)
-        return if (viewType == TYPE_SEPARATOR) {
-            val view = inflater.inflate(R.layout.item_separator, parent, false)
-            SeparatorViewHolder(view)
-        } else {
-            val view = inflater.inflate(R.layout.item_details_data, parent, false)
-            ItemViewHolder(view)
+        return when (viewType) {
+            TYPE_SEPARATOR, TYPE_SEPARATOR_LINE -> {
+                val layout = if (viewType == TYPE_SEPARATOR) R.layout.item_separator else R.layout.item_separator_line
+                val view = inflater.inflate(layout, parent, false)
+                SeparatorViewHolder(view)
+            }
+            else -> {
+                val view = inflater.inflate(R.layout.item_details_data, parent, false)
+                ItemViewHolder(view)
+            }
         }
     }
 
@@ -85,7 +91,7 @@ class DetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             }
         }
         if (emails.isNotEmpty()) {
-            items.add(Item.Separator())
+            items.add(Item.SeparatorLine())
             notifyItemInserted(lastPosition)
             emails.forEachIndexed { index, email ->
                 items.add(Item.Email(email.kind, email.address, isFirst = index == 0))
@@ -93,7 +99,7 @@ class DetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             }
         }
         if (addresses.isNotEmpty()) {
-            items.add(Item.Separator())
+            items.add(Item.SeparatorLine())
             notifyItemInserted(lastPosition)
             addresses.forEachIndexed { index, address ->
                 items.add(Item.Address(address.kind, address.fullAddress, isFirst = index == 0))
