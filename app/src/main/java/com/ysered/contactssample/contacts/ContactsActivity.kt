@@ -1,7 +1,6 @@
 package com.ysered.contactssample.contacts
 
 import android.Manifest
-import android.arch.lifecycle.LifecycleOwner
 import android.database.Cursor
 import android.os.Bundle
 import android.provider.ContactsContract
@@ -21,7 +20,7 @@ import com.ysered.contactssample.utils.processPermissionResults
 import com.ysered.contactssample.utils.requestPermissionsIfNeeded
 import com.ysered.contactssample.utils.showToast
 
-class ContactsActivity : AppCompatActivity(), LifecycleOwner {
+class ContactsActivity : AppCompatActivity() {
 
     companion object {
         private val REQUEST_CODE_CONTACTS = 1
