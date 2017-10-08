@@ -10,7 +10,6 @@ import android.support.v4.content.Loader
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import com.ysered.contactssample.R
 import com.ysered.contactssample.data.Contact
 import com.ysered.contactssample.data.getContact
@@ -19,6 +18,7 @@ import com.ysered.contactssample.utils.forEach
 import com.ysered.contactssample.utils.processPermissionResults
 import com.ysered.contactssample.utils.requestPermissionsIfNeeded
 import com.ysered.contactssample.utils.showToast
+import kotlinx.android.synthetic.main.activity_contacts.*
 
 class ContactsActivity : AppCompatActivity() {
 
@@ -34,7 +34,6 @@ class ContactsActivity : AppCompatActivity() {
         )
     }
 
-    private lateinit var contactsRv: RecyclerView
     private lateinit var contactsAdapter: ContactsAdapter
 
     private val loaderCallbacks = object : LoaderManager.LoaderCallbacks<Cursor> {
@@ -79,7 +78,7 @@ class ContactsActivity : AppCompatActivity() {
                 DetailsActivity.start(this@ContactsActivity, contact)
             }
         })
-        contactsRv = findViewById<RecyclerView>(R.id.contactsRv).apply {
+        contactsRv.apply {
             layoutManager = LinearLayoutManager(this@ContactsActivity)
             addItemDecoration(DividerItemDecoration(this@ContactsActivity, DividerItemDecoration.VERTICAL))
             adapter = contactsAdapter
