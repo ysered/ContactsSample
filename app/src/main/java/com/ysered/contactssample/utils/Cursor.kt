@@ -5,6 +5,12 @@ package com.ysered.contactssample.utils
 import android.database.Cursor
 import android.net.Uri
 
+
+fun Cursor.first(body: Cursor.(cursor: Cursor) -> Unit) {
+    if (!isClosed && count > 0 && moveToFirst())
+        body(this)
+}
+
 /**
  * Iterates through [Cursor] and executes [body] in its context.
  */

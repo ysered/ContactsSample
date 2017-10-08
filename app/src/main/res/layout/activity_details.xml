@@ -20,7 +20,7 @@
             app:layout_scrollFlags="scroll|enterAlways|snap">
 
             <ImageView
-                android:id="@+id/contactPhotoImage"
+                android:id="@+id/photoImage"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/bigContactPhotoHeight"
                 android:adjustViewBounds="true"

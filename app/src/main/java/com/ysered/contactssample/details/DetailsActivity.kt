@@ -5,28 +5,29 @@ import android.content.Intent
 import android.database.Cursor
 import android.os.Bundle
 import android.provider.ContactsContract
-import android.support.design.widget.CollapsingToolbarLayout
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.CursorLoader
 import android.support.v4.content.Loader
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
 import android.view.Menu
-import android.widget.ImageView
 import com.ysered.contactssample.R
 import com.ysered.contactssample.data.*
+import com.ysered.contactssample.utils.first
 import com.ysered.contactssample.utils.forEach
 import com.ysered.contactssample.utils.showToast
+import kotlinx.android.synthetic.main.activity_details.*
 
 
 class DetailsActivity : AppCompatActivity() {
 
     companion object {
-        private val PHONES_LOADER = 0
-        private val EMAILS_LOADER = 1
-        private val ADDRESSES_LOADER = 2
+        private val CONTACT_LOADER = 0
+        private val PHONES_LOADER = 1
+        private val EMAILS_LOADER = 2
+        private val ADDRESSES_LOADER = 3
+
+        private val CONTACT_SELECTION = "${ContactsContract.Contacts._ID} = ?"
 
         private val PHONES_SELECTION = "${ContactsContract.CommonDataKinds.Phone.CONTACT_ID} = ?"
         private val PHONES_SORT_ORDER = ContactsContract.CommonDataKinds.Phone.SORT_KEY_PRIMARY
@@ -44,16 +45,21 @@ class DetailsActivity : AppCompatActivity() {
     }
 
     private val contact by lazy { intent?.getContactExtra() }
-
-    private lateinit var collapsingToolbar: CollapsingToolbarLayout
-    private lateinit var toolbar: Toolbar
-    private lateinit var photoImage: ImageView
-    private lateinit var detailsAdapter: DetailsAdapter
+    private val detailsAdapter by lazy { DetailsAdapter() }
 
     private val loaderCallbacks = object : LoaderManager.LoaderCallbacks<Cursor> {
         override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
             val selectionArgs = arrayOf(contact!!.id)
             return when (id) {
+                CONTACT_LOADER -> {
+                    CursorLoader(
+                            this@DetailsActivity,
+                            ContactsContract.Contacts.CONTENT_URI,
+                            null,
+                            CONTACT_SELECTION,
+                            selectionArgs,
+                            null)
+                }
                 PHONES_LOADER -> {
                     CursorLoader(
                             this@DetailsActivity,
@@ -88,6 +94,11 @@ class DetailsActivity : AppCompatActivity() {
         override fun onLoadFinished(loader: Loader<Cursor>?, cursor: Cursor?) {
             if (loader != null && cursor != null) {
                 when (loader.id) {
+                    CONTACT_LOADER -> {
+                        cursor.first {
+                            getContact().let { collapsingToolbar.title = it.displayName }
+                        }
+                    }
                     PHONES_LOADER -> {
                         val phones = mutableListOf<Phone>()
                         cursor.forEach {
@@ -124,21 +135,17 @@ class DetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
 
-        // init views
-        collapsingToolbar = findViewById(R.id.collapsingToolbar)
-        toolbar = findViewById(R.id.toolbar)
-        photoImage = findViewById(R.id.contactPhotoImage)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        detailsAdapter = DetailsAdapter()
-        findViewById<RecyclerView>(R.id.contactDataRv).apply {
+        contactDataRv.apply {
             adapter = detailsAdapter
             layoutManager = LinearLayoutManager(this@DetailsActivity)
         }
 
         if (contact != null) {
             showContact(contact!!)
+            supportLoaderManager.initLoader(CONTACT_LOADER, null, loaderCallbacks)
             supportLoaderManager.initLoader(PHONES_LOADER, null, loaderCallbacks)
             supportLoaderManager.initLoader(EMAILS_LOADER, null, loaderCallbacks)
             supportLoaderManager.initLoader(ADDRESSES_LOADER, null, loaderCallbacks)
