@@ -47,7 +47,7 @@ class DetailsActivity : AppCompatActivity() {
                 val selectionArgs = arrayOf(contact!!.id)
                 CursorLoader(
                         this@DetailsActivity,
-                        ContactsContract.Data.CONTENT_URI,
+                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                         null,
                         PHONES_SELECTION,
                         selectionArgs,
@@ -95,7 +95,7 @@ class DetailsActivity : AppCompatActivity() {
 
         if (contact != null) {
             showContact(contact!!)
-            initPhonesLoader()
+            supportLoaderManager.initLoader(PHONES_LOADER, null, loaderCallbacks)
         } else {
             showToast(R.string.cannot_find_contact)
             finish()
@@ -118,11 +118,5 @@ class DetailsActivity : AppCompatActivity() {
             photoImage.setImageURI(contact.photoUri)
         else
             photoImage.setImageResource(R.drawable.bg_contact)
-    }
-
-    private fun initPhonesLoader() {
-        if (contact!!.hasPhoneNumber) {
-            supportLoaderManager.initLoader(PHONES_LOADER, null, loaderCallbacks)
-        }
     }
 }
