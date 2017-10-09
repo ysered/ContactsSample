@@ -36,7 +36,10 @@ fun <T> Cursor.map(body: Cursor.(cursor: Cursor) -> T): List<T> {
 
 fun Cursor.getInt(name: String): Int = getInt(getColumnIndex(name))
 
-fun Cursor.getString(name: String): String = getString(getColumnIndex(name)) ?: ""
+fun Cursor.getString(name: String): String {
+    val columnIndex = getColumnIndex(name)
+    return if (columnIndex != -1) getString(columnIndex) ?: "" else ""
+}
 
 fun Cursor.getBoolean(name: String): Boolean = getInt(name) == 1
 

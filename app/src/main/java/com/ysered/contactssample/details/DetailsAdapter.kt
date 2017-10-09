@@ -7,9 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.ysered.contactssample.R
-import com.ysered.contactssample.data.Address
-import com.ysered.contactssample.data.Email
-import com.ysered.contactssample.data.Phone
+import com.ysered.contactssample.data.ContactDetails
 import com.ysered.contactssample.utils.isVisible
 
 
@@ -32,23 +30,31 @@ class DetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     private var items: MutableList<Item> = mutableListOf()
-    private val lastPosition: Int
-        get() = if (itemCount > 0) itemCount - 1 else 0
 
-    var phones: List<Phone> = emptyList()
+    var contactDetails: ContactDetails? = null
         set(value) {
-            field = value
-            updateItems()
-        }
-    var emails: List<Email> = emptyList()
-        set(value) {
-            field = value
-            updateItems()
-        }
-    var addresses: List<Address> = emptyList()
-        set(value) {
-            field = value
-            updateItems()
+            value?.let {
+                items.clear()
+                if (it.phones.isNotEmpty()) {
+                    items.add(Item.Separator())
+                    it.phones.forEachIndexed { index, phone ->
+                        items.add(Item.Phone(phone.kind, phone.number, isFirst = index == 0))
+                    }
+                }
+                if (it.emails.isNotEmpty()) {
+                    items.add(Item.SeparatorLine())
+                    it.emails.forEachIndexed { index, email ->
+                        items.add(Item.Email(email.kind, email.address, isFirst = index == 0))
+                    }
+                }
+                if (it.addresses.isNotEmpty()) {
+                    items.add(Item.SeparatorLine())
+                    it.addresses.forEachIndexed { index, address ->
+                        items.add(Item.Address(address.kind, address.fullAddress, isFirst = index == 0))
+                    }
+                }
+                notifyDataSetChanged()
+            }
         }
 
     override fun getItemViewType(position: Int): Int = items[position].itemType
@@ -76,37 +82,6 @@ class DetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun getItemCount(): Int = items.size
-
-    // TODO: optimize!
-    private fun updateItems() {
-        items.clear()
-        notifyDataSetChanged()
-
-        if (phones.isNotEmpty()) {
-            items.add(Item.Separator())
-            notifyItemInserted(lastPosition)
-            phones.forEachIndexed { index, phone ->
-                items.add(Item.Phone(phone.kind, phone.number, isFirst = index == 0))
-                notifyItemInserted(lastPosition)
-            }
-        }
-        if (emails.isNotEmpty()) {
-            items.add(Item.SeparatorLine())
-            notifyItemInserted(lastPosition)
-            emails.forEachIndexed { index, email ->
-                items.add(Item.Email(email.kind, email.address, isFirst = index == 0))
-                notifyItemInserted(lastPosition)
-            }
-        }
-        if (addresses.isNotEmpty()) {
-            items.add(Item.SeparatorLine())
-            notifyItemInserted(lastPosition)
-            addresses.forEachIndexed { index, address ->
-                items.add(Item.Address(address.kind, address.fullAddress, isFirst = index == 0))
-                notifyItemInserted(lastPosition)
-            }
-        }
-    }
 
     private inner class SeparatorViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
