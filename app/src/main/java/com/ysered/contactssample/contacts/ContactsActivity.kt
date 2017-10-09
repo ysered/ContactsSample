@@ -1,56 +1,27 @@
 package com.ysered.contactssample.contacts
 
 import android.Manifest
-import android.database.Cursor
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.provider.ContactsContract
-import android.support.v4.app.LoaderManager
-import android.support.v4.content.CursorLoader
-import android.support.v4.content.Loader
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import com.ysered.contactssample.R
 import com.ysered.contactssample.data.Contact
-import com.ysered.contactssample.data.getContact
 import com.ysered.contactssample.details.DetailsActivity
-import com.ysered.contactssample.utils.*
+import com.ysered.contactssample.utils.processPermissionResults
+import com.ysered.contactssample.utils.requestPermissionsIfNeeded
+import com.ysered.contactssample.utils.showToast
 import kotlinx.android.synthetic.main.activity_contacts.*
 
 class ContactsActivity : AppCompatActivity() {
 
     companion object {
         private val REQUEST_CODE_CONTACTS = 1
-        private val LOADER_ID = 1
-        private val PROJECTION = arrayOf(
-                ContactsContract.Contacts._ID,
-                ContactsContract.Contacts.PHOTO_THUMBNAIL_URI,
-                ContactsContract.Contacts.PHOTO_URI,
-                ContactsContract.Contacts.DISPLAY_NAME,
-                ContactsContract.Contacts.HAS_PHONE_NUMBER
-        )
     }
 
     private lateinit var contactsAdapter: ContactsAdapter
-
-    private val loaderCallbacks = object : LoaderManager.LoaderCallbacks<Cursor> {
-        override fun onCreateLoader(id: Int, bundle: Bundle?): Loader<Cursor> = CursorLoader(
-                this@ContactsActivity,
-                ContactsContract.Contacts.CONTENT_URI,
-                PROJECTION,
-                null,
-                null,
-                ContactsContract.Contacts.SORT_KEY_PRIMARY
-        )
-
-        override fun onLoadFinished(loader: Loader<Cursor>?, cursor: Cursor?) {
-            cursor?.let {
-                contactsAdapter.contacts = cursor.map { getContact() }
-            }
-        }
-
-        override fun onLoaderReset(loader: android.support.v4.content.Loader<Cursor>?) = Unit
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,7 +48,10 @@ class ContactsActivity : AppCompatActivity() {
             addItemDecoration(DividerItemDecoration(this@ContactsActivity, DividerItemDecoration.VERTICAL))
             adapter = contactsAdapter
         }
-        supportLoaderManager.initLoader(LOADER_ID, null, loaderCallbacks)
+        val viewModel = ViewModelProviders.of(this).get(ContactsViewModel::class.java)
+        viewModel.contactsLiveData.observe(this, Observer { contacts ->
+            contacts?.let { contactsAdapter.contacts = it }
+        })
     }
 
     private fun onDenied(isShowAdditionalHint: Boolean) {

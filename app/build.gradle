@@ -24,6 +24,7 @@ android {
 ext {
     supportLibraryVersion = '26.1.0'
     constraintLayoutVersion = '1.0.2'
+    archVersion = '1.0.0-alpha9-1'
     junitVersion = '4.12'
     espressoCoreVersion = '3.0.1'
 }
@@ -38,6 +39,9 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:$supportLibraryVersion"
     implementation "com.android.support:design:$supportLibraryVersion"
     implementation "com.android.support.constraint:constraint-layout:$constraintLayoutVersion"
+
+    // Architecture components
+    implementation "android.arch.lifecycle:extensions:$archVersion"
 
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation("com.android.support.test.espresso:espresso-core:$espressoCoreVersion", {
