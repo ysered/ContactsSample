@@ -48,8 +48,9 @@ class ContactsActivity : AppCompatActivity() {
             addItemDecoration(DividerItemDecoration(this@ContactsActivity, DividerItemDecoration.VERTICAL))
             adapter = contactsAdapter
         }
+
         val viewModel = ViewModelProviders.of(this).get(ContactsViewModel::class.java)
-        viewModel.contactsLiveData.observe(this, Observer { contacts ->
+        viewModel.observeChanges(this, Observer { contacts ->
             contacts?.let { contactsAdapter.contacts = it }
         })
     }

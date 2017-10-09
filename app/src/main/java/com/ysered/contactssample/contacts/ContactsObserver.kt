@@ -1,6 +1,8 @@
 package com.ysered.contactssample.contacts
 
-import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LifecycleObserver
+import android.arch.lifecycle.OnLifecycleEvent
 import android.content.Context
 import android.database.ContentObserver
 import android.os.Handler
@@ -10,10 +12,10 @@ import com.ysered.contactssample.data.getContact
 import com.ysered.contactssample.utils.map
 
 
-class ContactsLiveData(context: Context) : MutableLiveData<List<Contact>>() {
+class ContactsObserver(context: Context, private val listener: OnUpdateListener) : LifecycleObserver {
 
     companion object {
-        private val CONTACTS_URI = ContactsContract.Contacts.CONTENT_URI
+        private val URI = ContactsContract.Contacts.CONTENT_URI
         private val PROJECTION = arrayOf(
                 ContactsContract.Contacts._ID,
                 ContactsContract.Contacts.PHOTO_THUMBNAIL_URI,
@@ -35,22 +37,26 @@ class ContactsLiveData(context: Context) : MutableLiveData<List<Contact>>() {
         }
     }
 
-    override fun onActive() {
-        super.onActive()
-        contentResolver.registerContentObserver(CONTACTS_URI, false, observer)
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    fun onCreate() {
+        contentResolver.registerContentObserver(URI, false, observer)
         queryAndUpdateContacts()
     }
 
-    override fun onInactive() {
-        super.onInactive()
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
         contentResolver.unregisterContentObserver(observer)
     }
 
     private fun queryAndUpdateContacts() {
-        contentResolver.query(CONTACTS_URI, PROJECTION, SELECTION, SELECTION_ARGS, ORDER_BY).apply {
-            val contacts = map { getContact() }
-            postValue(contacts)
-            close()
+        contentResolver.query(URI, PROJECTION, SELECTION, SELECTION_ARGS, ORDER_BY).let { cursor ->
+            val contacts = cursor.map { getContact() }
+            cursor.close()
+            listener.onUpdated(contacts)
         }
+    }
+
+    interface OnUpdateListener {
+        fun onUpdated(contacts: List<Contact>)
     }
 }
