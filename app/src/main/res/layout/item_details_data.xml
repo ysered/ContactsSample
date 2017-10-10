@@ -12,7 +12,7 @@
         android:id="@+id/dataIconImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/marginDefault"
+        android:layout_marginStart="@dimen/marginLarge"
         android:contentDescription="@string/call"
         android:src="@drawable/ic_phone"
         app:layout_constraintBottom_toBottomOf="parent"

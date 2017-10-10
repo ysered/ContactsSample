@@ -2,13 +2,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/marginSmall"
-    android:layout_gravity="center_vertical"
     android:paddingEnd="@dimen/marginSmall"
     android:paddingStart="@dimen/marginSmall">
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_gravity="center_vertical"
         android:background="@color/colorGray200" />
 
 </FrameLayout>
