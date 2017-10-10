@@ -43,7 +43,7 @@ class DetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-    private var items: MutableList<Item> = mutableListOf()
+    private val items: MutableList<Item> = mutableListOf()
 
     var contactDetails: ContactDetails? = null
         set(value) {
