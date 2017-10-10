@@ -4,16 +4,17 @@ import android.content.Context
 import android.provider.ContactsContract
 import com.ysered.contactssample.data.Contact
 import com.ysered.contactssample.utils.ContentProviderUtils
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.async
 
 
 class ContactListObserver(
         private val context: Context,
-        callback: (data: List<Contact>) -> Unit
-) : SystemDataObserver<List<Contact>>(
-        context,
-        uri = ContactsContract.Contacts.CONTENT_URI,
-        callback = callback
-) {
+        onLoadListener: OnLoadListener<List<Contact>>
+) : SystemDataObserver<List<Contact>>(context, ContactsContract.Contacts.CONTENT_URI, onLoadListener) {
 
-    override fun getData(): List<Contact> = ContentProviderUtils.readContactList(context)
+    override suspend fun getData(): Deferred<List<Contact>> = async(CommonPool) {
+        ContentProviderUtils.readContactList(this@ContactListObserver.context)
+    }
 }

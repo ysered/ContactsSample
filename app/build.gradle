@@ -21,7 +21,14 @@ android {
     }
 }
 
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}
+
 ext {
+    coroutinesVersion = '0.18'
     supportLibraryVersion = '26.1.0'
     constraintLayoutVersion = '1.0.2'
     archVersion = '1.0.0-alpha9-1'
@@ -33,6 +40,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
 
     // Support libraries
     implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
