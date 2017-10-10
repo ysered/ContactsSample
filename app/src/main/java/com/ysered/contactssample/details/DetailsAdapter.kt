@@ -24,9 +24,23 @@ class DetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private sealed class Item(val itemType: Int) {
         class Separator : Item(TYPE_SEPARATOR)
         class SeparatorLine : Item(TYPE_SEPARATOR_LINE)
-        class Phone(val kind: String, val data: String, val isFirst: Boolean = false) : Item(TYPE_PHONE)
-        class Email(val kind: String, val data: String, val isFirst: Boolean = false) : Item(TYPE_EMAIL)
-        class Address(val kind: String, val data: String, val isFirst: Boolean = false) : Item(TYPE_ADDRESS)
+        sealed class Data(
+                itemType: Int,
+                val kind: String,
+                val data: String,
+                val isFirst: Boolean,
+                val icon: Int,
+                val associatedAppIcon: Int
+        ) : Item(itemType) {
+            class Phone(kind: String, data: String, isFirst: Boolean)
+                : Data(TYPE_PHONE, kind, data, isFirst, R.drawable.ic_phone, R.drawable.ic_message)
+
+            class Email(kind: String, data: String, isFirst: Boolean)
+                : Data(TYPE_EMAIL, kind, data, isFirst, R.drawable.ic_email, 0)
+
+            class Address(kind: String, data: String, isFirst: Boolean)
+                : Data(TYPE_ADDRESS, kind, data, isFirst, R.drawable.ic_place, R.drawable.ic_directions)
+        }
     }
 
     private var items: MutableList<Item> = mutableListOf()
@@ -38,19 +52,19 @@ class DetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 if (it.phones.isNotEmpty()) {
                     items.add(Item.Separator())
                     it.phones.forEachIndexed { index, phone ->
-                        items.add(Item.Phone(phone.kind, phone.number, isFirst = index == 0))
+                        items.add(Item.Data.Phone(phone.kind, phone.number, isFirst = index == 0))
                     }
                 }
                 if (it.emails.isNotEmpty()) {
                     items.add(Item.SeparatorLine())
                     it.emails.forEachIndexed { index, email ->
-                        items.add(Item.Email(email.kind, email.address, isFirst = index == 0))
+                        items.add(Item.Data.Email(email.kind, email.address, isFirst = index == 0))
                     }
                 }
                 if (it.addresses.isNotEmpty()) {
                     items.add(Item.SeparatorLine())
                     it.addresses.forEachIndexed { index, address ->
-                        items.add(Item.Address(address.kind, address.fullAddress, isFirst = index == 0))
+                        items.add(Item.Data.Address(address.kind, address.fullAddress, isFirst = index == 0))
                     }
                 }
                 notifyDataSetChanged()
@@ -93,26 +107,15 @@ class DetailsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         fun bind(item: Item) {
             when (item) {
-                is Item.Phone -> {
-                    dataIcon.setImageResource(R.drawable.ic_phone)
-                    appIconImage.setImageResource(R.drawable.ic_message)
+                is Item.Data -> {
+                    dataIcon.setImageResource(item.icon)
                     dataIcon.isVisible = item.isFirst
                     dataText.text = item.data
                     dataKindText.text = item.kind
-                }
-                is Item.Email -> {
-                    dataIcon.setImageResource(R.drawable.ic_email)
-                    appIconImage.isVisible = false
-                    dataIcon.isVisible = item.isFirst
-                    dataText.text = item.data
-                    dataKindText.text = item.kind
-                }
-                is Item.Address -> {
-                    dataIcon.setImageResource(R.drawable.ic_place)
-                    appIconImage.setImageResource(R.drawable.ic_directions)
-                    dataIcon.isVisible = item.isFirst
-                    dataText.text = item.data
-                    dataKindText.text = item.kind
+                    if (item is Item.Data.Email)
+                        appIconImage.isVisible = false
+                    else
+                        appIconImage.setImageResource(item.associatedAppIcon)
                 }
                 else -> throw RuntimeException("Unknown item type: ${item::class}")
             }
